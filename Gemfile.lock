@@ -1,0 +1,30 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    etc (1.0.1)
+    expect (0.0.13)
+      matchi (~> 0.0)
+    getopt (1.4.4)
+    io-console (0.4.6)
+    matchi (0.1.2)
+    mini_portile2 (2.3.0)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (5.0.2)
+    nokogiri (1.8.5)
+      mini_portile2 (~> 2.3.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  etc
+  expect
+  getopt
+  io-console
+  net-scp
+  net-ssh
+  nokogiri
+
+BUNDLED WITH
+   1.16.6

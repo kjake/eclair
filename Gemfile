@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+gem 'net-ssh'
+gem 'net-scp'
+gem 'etc'
+gem 'expect'
+gem 'getopt'
+gem 'nokogiri'
+gem 'io-console'
