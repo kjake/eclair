@@ -13,34 +13,34 @@
 # Packager:     Richard Spindler <richard@lateralblast.com.au>
 # Description:  Ruby script to drive/setup ESX(i)
 
+require 'rubygems'
+require 'bundler/setup'
+
 require 'net/ssh'
 require 'net/scp'
 require 'etc'
 require 'expect'
 require 'getopt/std'
-require 'selenium-webdriver'
-require 'phantomjs'
 require 'nokogiri'
 require 'io/console'
+
 
 # Set some defaults
 
 script    = $0
-options   = "ABCDef:Hhl:kK:LMP:r:Rs:Sp:u:UVyZ"
+options   = "BCDef:Hhl:kK:LP:r:Rs:p:u:UVy"
 username  = ""
 password  = ""
 mode      = "check"
 doaction  = ""
 filename  = ""
 patchdir  = Dir.pwd+"/patches"
-release   = "6.0.0"
+release   = "6.5.0"
 download  = "n"
 reboot    = "n"
 
 # VMware URLs
 
-login_url   = "https://my.vmware.com/web/vmware/login"
-product_url = "https://www.vmware.com/patchmgr/findPatch.portal"
 depot_url   = "http://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml"
 
 # Password file (can be used so username and password are not shown in command line)
@@ -113,18 +113,13 @@ def print_usage(script,options)
   puts "-V:\tPrint version information"
   puts "-B:\tBackup ESX configuration"
   puts "-U:\tUpdate ESX if newer patch level is available"
-  puts "-Z:\tDowngrade ESX to earlier release"
   puts "-L:\tList all available versions in local patch directory"
-  puts "-M:\tList all available versions in VMware depot"
-  puts "-A:\tDownload available patches to local patch directory"
   puts "-C:\tCheck if newer patch level is available"
-  puts "-r:\tUpgrade or downgrade to a specific release"
   puts "-s:\tHostname"
   puts "-p:\tPassword"
   puts "-f:\tSource file for update"
   puts "-D:\tPatch directory (default is patches in sames directory as script)"
   puts "-y:\tPerform action (if not given you will be prompted before upgrades)"
-  puts "-S:\tSetup ESXi (Syslog, NTP, etc)"
   puts "-l:\tCheck if a particular patch is in the local repository"
   puts "-k:\tShow license keys"
   puts "-K:\tInstall license key"
@@ -210,22 +205,10 @@ if opt["C"]
   mode = "check"
 end
 
-# If given -Z option set mode to downgrade
-
-if opt["Z"]
-  mode = "down"
-end
-
 # If given  -y option perform tasks without asking
 
 if opt["y"]
   doaction = "y"
-end
-
-# If given -r option set te release number of ESX (e.g. 5.1.0)
-
-if opt["r"]
-  release = opt["r"]
 end
 
 # If given -b option reboot after patch installation
@@ -382,7 +365,7 @@ def control_server(hostname,username,password,command)
   puts "Server:  "+hostname
   puts "Command: "+command
   begin
-    Net::SSH.start(hostname, username, :password => password, :paranoid => false) do |ssh_session|
+    Net::SSH.start(hostname, username, :password => password, :verify_host_key => :never) do |ssh_session|
       output = ssh_session.exec!(command)
       return output
     end
@@ -409,7 +392,7 @@ end
 
 def update_esxi(hostname,username,password,filename,mode,doaction,depot_url,reboot)
   begin
-    Net::SSH.start(hostname, username, :password => password, :paranoid => false) do |ssh_session|
+    Net::SSH.start(hostname, username, :password => password, :verify_host_key => :never) do |ssh_session|
       (ssh_session,os_version)    = get_os_version(ssh_session)
       (ssh_session,local_version) = get_local_version(ssh_session,filename)
       (ssh_session,depot_version) = get_depot_version(ssh_session,filename,depot_url,os_version)
@@ -445,41 +428,6 @@ def list_local_patches(patchdir)
       end
     end
   end
-end
-
-# Get a list of the available patches on the vmware site and put them into a hash
-# Need to send dropdown box seletions twice to ensure they stick
-# Need to search for button to click via src tag due to malformed HTML
-
-def get_vmware_patch_info(login_url,product_url,username,password,release)
-  update_list = {}
-  update = ""
-  driver = Selenium::WebDriver.for :phantomjs
-  driver.get(login_url)
-  driver.find_element(:id => "username").send_keys(username)
-  driver.find_element(:id => "password").send_keys(password)
-  driver.find_element(:id => "button-login").click
-  driver.get(product_url)
-  driver.find_element(:name => "product").find_element(:css,"option[value='ESXi (Embedded and Installable)']").click
-  driver.find_element(:name => "product").find_element(:css,"option[value='ESXi (Embedded and Installable)']").click
-  driver.find_element(:name => "product").find_element(:css,"option[value='ESXi (Embedded and Installable)']").click
-  driver.find_element(:name => "version").send_keys(release)
-  driver.find_element(:name => "version").send_keys(release)
-  driver.find_element(:xpath,"//*[@src='/patchmgr/resources/images/support_search_button.gif']").click
-  page = driver.page_source
-  page = Nokogiri::HTML.parse(page)
-  info = page.css("span").css("input")
-  info.each do |download|
-    value = download["value"]
-    if !value.match(/http/)
-      update = value
-    else
-      if value.match(/ESX/)
-        update_list[update] = value
-      end
-    end
-  end
-  return update_list
 end
 
 # Process the hash of patches returned from the VMware site and check they are
@@ -643,27 +591,6 @@ end
 # If given the -A or -R option check the available patches on the VMware site
 # Also checks if they are present in the local repository
 
-if opt["M"] or opt["A"]
-  puts "Enter VMware Web Site Login"
-  if username !~ /[A-z]/
-    if !opt["u"]
-      username = get_vmware_username(username,vmware_password_file)
-    else
-      username = opt["u"]
-    end
-  end
-  if password !~ /[A-z]/
-    if !opt["p"]
-      password = get_vmware_password(password,vmware_password_file)
-    else
-      password = opt["p"]
-    end
-  end
-  patch_list = get_vmware_patch_info(login_url,product_url,username,password,release)
-  process_vmware_patch_info(patch_list,download,patchdir)
-  exit
-end
-
 if opt["U"] or opt["C"] or opt["D"] or opt["K"] or opt["k"] or opt["H"] or opt["R"] or opt["e"] or opt["B"]
   if !hostname
     puts "No server name given"
@@ -683,7 +610,7 @@ if opt["U"] or opt["C"] or opt["D"] or opt["K"] or opt["k"] or opt["H"] or opt["
       password = opt["p"]
     end
   end
-  if opt["U"] or opt["C"] or opt["Z"]
+  if opt["U"] or opt["C"]
     update_esxi(hostname,username,password,filename,mode,doaction,depot_url,reboot)
   else
     if opt["K"] or opt["k"] or opt["H"] or opt["R"] or opt["e"] or opt["B"]

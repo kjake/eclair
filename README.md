@@ -1,4 +1,4 @@
-![alt tag](https://raw.githubusercontent.com/lateralblast/eclair/master/VMware_Stack.png)
+![alt tag](https://github.com/kjake/eclair/raw/master/VMware_Stack.png)
 
 ECLAIR
 ======
@@ -13,23 +13,20 @@ and updating. The automation is done via SSH. This is done with the ruby net/ssh
 and net/scp gems. The goal was to make a command line tool to do this so that I
 could automate the process across a number of machines.
 
-Eclair also has the capability of getting the latest patches from the WMware
-website. Due to the use of Javascript on the VMware download site this had to
-be achieved with a combination of the selenium-webdriver, phantomjs and nokogiri gems.
-
 License
 -------
 
 This software is licensed as CC-BA (Creative Commons By Attrbution)
-
 http://creativecommons.org/licenses/by/4.0/legalcode
+
+This is Forked Version from https://github.com/lateralblast/eclair
 
 Features
 --------
 
 Some of the features include:
 
-- Upgrade/Downgrade ESXi
+- Upgrade ESXi
   - From local repository or from VMware
     - When using local reposity it copies update to /scratch/downloads on ESXi host and then installs
     - The local repository by default sits in a "patches" directory in the same directory as the script
@@ -45,31 +42,23 @@ Required software to run exlair:
 - ruby
 - wget
 - ruby gems
-  - net/ssh
-  - net/scp
-  - etc
-  - expect
-  - getopt/std
-  - selenium-webdriver
-  - phantomjs
-  - nokogiri
-  - io/console
+  - 'net-ssh'
+  - 'net-scp'
+  - 'etc'
+  - 'expect'
+  - 'getopt'
+  - 'nokogiri'
+  - 'io-console'
 
 Installation
 ------------
 
 ```
-$ brew install wget
-$ gem install net-ssh
-$ gem install net-scp
-$ gem install etc
-$ grem install expect
-$ gem install getopt
-$ gem install selenium
-$ selenium install
-$ gem install selenium-wbedriver
-$ gem install phantomjs
-$ gem install nokogiri -- --use-system--libraries
+$ brew install wget ruby
+New session:
+$ gem install bundler
+In eclair's directory:
+$ bundle install
 ```
 
 Issues
@@ -81,12 +70,11 @@ Issues encountered:
   - If you are going to download them manually, you'll need to do it soon after you run the script
 
 Todo:
-
-- Setup an ESXi host
-  - NTP
-  - Syslog
-  - SNMP
-- Lockdown ESXi host
+- [ ] Setup an ESXi host
+  - [ ] NTP
+  - [ ] Syslog
+  - [ ] SNMP
+- [ ] Lockdown ESXi host
 
 
 Usage
@@ -95,18 +83,14 @@ Usage
 You can find out the command line options available to you by using the -h option:
 
 ```
-Usage: eclair.rb -[AbCDef:Hhl:kK:LMP:r:Rs:Sp:u:UVyZ]
+Usage: eclair.rb -[bCDef:Hhl:kK:LP:r:Rs:Sp:u:UVy]
 
 -h:	Print usage information
 -V:	Print version information
 -B: Backup server configuration
 -U:	Update ESX if newer patch level is available
--Z:	Downgrade ESX to earlier release
 -L:	List all available versions in local patch directory
--M:	List all available versions in VMware depot
--A:	Download available patches to local patch directory
 -C:	Check if newer patch level is available
--r:	Upgrade or downgrade to a specific release
 -s:	Hostname
 -p:	Password
 -f:	Source file for update
@@ -255,44 +239,6 @@ Update Result
    VMware_bootbank_scsi-mptspi_4.23.01.00-9vmw.550.0.0.1331820, VMware_bootbank_scsi-qla2xxx_902.k1.1-9vmw.550.0.0.1331820,
    VMware_bootbank_scsi-qla4xxx_5.01.03.2-6vmw.550.0.0.1331820, VMware_bootbank_uhci-usb-uhci_1.0-3vmw.550.0.0.1331820
 Rebooting
-```
-
-Get a list of the available patches for ESXi for 5.1.0:
-
-```
-$ ./eclair.rb -R -r 5.1.0
-Update:   ESXi510-201404001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-431-20140427-641697/ESXi510-201404001.zip?HashKey=b67d1404781d0d791f4f911065073499&AuthKey=1401676093_4dc39ad8083dbde1c34e6e526a5
-45d5e
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201404001.zip
-Update:   ESXi510-201402001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-420-20140226-922881/ESXi510-201402001.zip?HashKey=67c081d74083f2c3a10f94000b43d2fd&AuthKey=1401676093_a33f4b25ac645443bcf2926c7f7
-7f17b
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201402001.zip
-Update:   ESXi510-201310001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-402-20131016-227919/ESXi510-201310001.zip?HashKey=ba0c39f3a9ea054afbe3f5feb6d1d56d&AuthKey=1401676093_67e756d758478965261a19ca5dc
-067bf
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201310001.zip
-Update:   ESXi510-201307001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-394-20130722-233368/ESXi510-201307001.zip?HashKey=df48dcad4875176724df7f8f850e7061&AuthKey=1401676093_5c0379a805748318d618ad827fe
-97268
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201307001.zip
-Update:   ESXi510-201305001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-387-20130519-806235/ESXi510-201305001.zip?HashKey=15a0c1c2a4b929d0bf421c4d9705158f&AuthKey=1401676093_e2a0c5220bf9cb6c8644fd74d59
-0c9c4
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201305001.zip
-Update:   ESXi510-201303001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-375-20130304-043403/ESXi510-201303001.zip?HashKey=87509815d8ae55ff4a8051707bbf2eaa&AuthKey=1401676093_645a458051fb743ab3b0ea2cde6
-4cc5d
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201303001.zip
-Update:   ESXi510-201212001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-368-20121217-718319/ESXi510-201212001.zip?HashKey=d56cbde35ce7e3a5deb6932e4d878505&AuthKey=1401676093_88e26c9013bc8f8d205409097f9
-7f6f6
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201212001.zip
-Update:   ESXi510-201210001
-Download: https://download2.vmware.com/patch/software/VUM/OFFLINE/release-364-20121022-316291/ESXi510-201210001.zip?HashKey=f9a8eb1fe79f6f379d4ef8015f037923&AuthKey=1401676093_695515bcc52410bd4da254ce667
-be1a3
-Missing:  /Users/spindler/Code/eclair/patches/ESXi510-201210001.zip
 ```
 
 Show license keys:
