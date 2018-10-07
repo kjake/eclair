@@ -42,13 +42,11 @@ Required software to run exlair:
 - ruby
 - wget
 - ruby gems
-  - 'net-ssh'
-  - 'net-scp'
-  - 'etc'
-  - 'expect'
-  - 'getopt'
-  - 'nokogiri'
-  - 'io-console'
+  - net-ssh
+  - net-scp
+  - etc
+  - getopt
+  - io-console
 
 Installation
 ------------

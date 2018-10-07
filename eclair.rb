@@ -15,9 +15,7 @@ require 'bundler/setup'
 require 'net/ssh'
 require 'net/scp'
 require 'etc'
-require 'expect'
 require 'getopt/std'
-require 'nokogiri'
 require 'io/console'
 
 
@@ -488,6 +486,26 @@ def get_esx_password(paasword,esx_password_file,hostname)
   return password
 end
 
+# Get hostname
+
+def get_hostname(hostname)
+  while hostname !~ /[A-z]/
+    print "Hostname: "
+    hostname = gets.chomp
+  end
+  return hostname
+end
+
+# Get command
+
+def get_command(command)
+  while command !~ /[A-z]/
+    print "Command: "
+    command = gets.chomp
+  end
+  return command
+end
+
 # Get username
 
 def get_username(username)
@@ -566,8 +584,7 @@ end
 
 if opt["U"] or opt["C"] or opt["D"] or opt["K"] or opt["k"] or opt["H"] or opt["R"] or opt["e"] or opt["B"]
   if !hostname
-    puts "No server name given"
-    exit
+    hostname = get_hostname(hostname)
   end
   if username !~ /[A-z]/
     if !opt["u"]
@@ -587,6 +604,9 @@ if opt["U"] or opt["C"] or opt["D"] or opt["K"] or opt["k"] or opt["H"] or opt["
     update_esxi(hostname,username,password,filename,mode,doaction,depot_url,reboot)
   else
     if opt["K"] or opt["k"] or opt["H"] or opt["R"] or opt["e"] or opt["B"]
+      if !command
+        command = get_command(command)
+      end
       output = control_server(hostname,username,password,command)
       puts output
       if opt["B"]

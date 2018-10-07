@@ -2,7 +2,6 @@ FROM ruby:alpine
 MAINTAINER kjake
 RUN apk update -f \
     && apk --no-cache add -f \
-    build-base \
     ruby-bundler \
     curl \
     wget \
