@@ -1,17 +1,13 @@
 #!/usr/bin/env ruby
 
-# Name:         eclair (ESX Command Line Automation In Ruby)
-# Version:      0.1.7
-# Release:      1
-# License:      CC-BA (Creative Commons By Attrbution)
-#               http://creativecommons.org/licenses/by/4.0/legalcode
-# Group:        System
-# Source:       N/A
-# URL:          http://lateralblast.com.au/
-# Distribution: ESX(i)
-# Vendor:       UNIX
-# Packager:     Richard Spindler <richard@lateralblast.com.au>
-# Description:  Ruby script to drive/setup ESX(i)
+# Name:               eclair (ESX Command Line Automation In Ruby)
+# Version:            0.2.0
+# License:            CC-BA (Creative Commons By Attrbution)
+#                     http://creativecommons.org/licenses/by/4.0/legalcode
+# Author:             Richard Spindler <richard@lateralblast.com.au>
+# Source:             https://github.com/kjake/eclair
+# Version Maintainer: kjake <kjake@dc616.org>
+# Description:        Ruby script to drive/setup ESX(i)
 
 require 'rubygems'
 require 'bundler/setup'
@@ -49,11 +45,10 @@ depot_url   = "http://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-dep
 # ALL:username:password or *:username:password will work
 
 esx_password_file    = Etc.getpwuid.dir+"/.esxpasswd"
-vmware_password_file = Etc.getpwuid.dir+"/.vmwarepasswd"
 
 # If password files exist give them sensible permissions
 
-[ esx_password_file, vmware_password_file ].each do |password_file|
+[ esx_password_file ].each do |password_file|
   if File.exist?(password_file)
     file_stat = File.stat(password_file)
     file_mode = file_stat.mode.to_i
@@ -116,6 +111,7 @@ def print_usage(script,options)
   puts "-L:\tList all available versions in local patch directory"
   puts "-C:\tCheck if newer patch level is available"
   puts "-s:\tHostname"
+  puts "-u:\tUsername"
   puts "-p:\tPassword"
   puts "-f:\tSource file for update"
   puts "-D:\tPatch directory (default is patches in sames directory as script)"
@@ -492,18 +488,6 @@ def get_esx_password(paasword,esx_password_file,hostname)
   return password
 end
 
-# If the password isn't given on the command line, try to retrieve it from
-# the .vmwarepasswd file. Otherwise ask for it.
-
-def get_vmware_password(password,vmware_password_file)
-  if File.exist?(vmware_password_file)
-    password = %x[cat #{vmware_password_file} |cut -f2 -d:].chomp
-  else
-    password = get_username(password)
-  end
-  return password
-end
-
 # Get username
 
 def get_username(username)
@@ -531,17 +515,6 @@ def get_esx_username(username,esx_password_file,hostname)
   return username
 end
 
-# If the username isn't given on the command line, try to retrieve it from
-# the .vmwarepasswd file. Otherwise ask for it.
-
-def get_vmware_username(username,vmware_password_file)
-  if File.exist?(vmware_password_file)
-    username = %x[cat #{vmware_password_file} |cut -f1 -d:].chomp
-  else
-    username = get_username(username)
-  end
-  return username
-end
 
 # Check if a particular patch is in the local repository
 

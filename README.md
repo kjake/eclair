@@ -92,6 +92,7 @@ Usage: eclair.rb -[bCDef:Hhl:kK:LP:r:Rs:Sp:u:UVy]
 -L:	List all available versions in local patch directory
 -C:	Check if newer patch level is available
 -s:	Hostname
+-u:	Username
 -p:	Password
 -f:	Source file for update
 -D:	Patch directory (default is patches in sames directory as script)
