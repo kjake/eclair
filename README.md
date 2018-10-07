@@ -34,19 +34,6 @@ Some of the features include:
 - Download any patches from the VMware site that are not in the local repository
 - The ESXi username and password can be stored in a local file so they don't appear on the command line
 
-Requirements
-------------
-
-Required software to run exlair:
-
-- ruby
-- wget
-- ruby gems
-  - net-ssh
-  - net-scp
-  - getopt
-  - io-console
-
 Docker Installation
 ------------
 
@@ -60,6 +47,16 @@ echo "server:user:password" > /tmp/.esxpasswd
 docker run -v /tmp/:/home/eclair --rm kjake/eclair -s server -R
 ```
 
+Requirements for Local Installation
+------------
+
+- ruby
+- wget
+- ruby gems
+  - net-ssh
+  - net-scp
+  - getopt
+  - io-console
 
 Local Installation
 ------------
