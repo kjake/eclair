@@ -47,7 +47,21 @@ Required software to run exlair:
   - getopt
   - io-console
 
-Installation
+Docker Installation
+------------
+
+Interactive:
+`docker run -it --rm eclair -h`
+
+Or, save your passwords in a file and map to the container...
+
+```
+echo "server:user:password" > /tmp/.esxpasswd
+docker run -v /tmp/:/home/eclair --rm eclair -s server -R
+```
+
+
+Local Installation
 ------------
 
 ```

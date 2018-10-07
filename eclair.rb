@@ -50,6 +50,7 @@ esx_password_file    = File.expand_path('~')+"/.esxpasswd"
     file_stat = File.stat(password_file)
     file_mode = file_stat.mode.to_i
     if file_mode !~ /600/
+      puts "For security #{password_file} should be chmod 600. Attempting this for you..."
       %x[chmod 600 #{password_file}]
     end
   end
