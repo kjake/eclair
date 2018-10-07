@@ -34,9 +34,9 @@ Some of the features include:
 - Download any patches from the VMware site that are not in the local repository
 - The ESXi username and password can be stored in a local file so they don't appear on the command line
 
-Requirements for Local Installation
+Overall Requirements
 ------------
-- ESXi 
+- At least one ESXi Installation
 - SSH/Shell enabled
 
 Docker Installation
