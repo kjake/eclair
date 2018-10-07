@@ -51,13 +51,13 @@ Docker Installation
 ------------
 
 Interactive:
-`docker run -it --rm eclair -h`
+`docker run -it --rm kjake/eclair -h`
 
 Or, save your passwords in a file and map to the container...
 
 ```
 echo "server:user:password" > /tmp/.esxpasswd
-docker run -v /tmp/:/home/eclair --rm eclair -s server -R
+docker run -v /tmp/:/home/eclair --rm kjake/eclair -s server -R
 ```
 
 
