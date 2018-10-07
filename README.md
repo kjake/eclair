@@ -26,13 +26,18 @@ Features
 
 Some of the features include:
 
-- Upgrade ESXi
+- Upgrade ESXi patch level without using VUM
   - From local repository or from VMware
     - When using local reposity it copies update to /scratch/downloads on ESXi host and then installs
     - The local repository by default sits in a "patches" directory in the same directory as the script
 - Get a list of available patches for a release of ESXi from the VMware web site
 - Download any patches from the VMware site that are not in the local repository
 - The ESXi username and password can be stored in a local file so they don't appear on the command line
+
+Requirements for Local Installation
+------------
+- ESXi 
+- SSH/Shell enabled
 
 Docker Installation
 ------------

@@ -50,7 +50,7 @@ esx_password_file    = File.expand_path('~')+"/.esxpasswd"
     file_stat = File.stat(password_file)
     file_mode = file_stat.mode.to_i
     if file_mode !~ /600/
-      puts "For security #{password_file} should be chmod 600. Attempting this for you..."
+      puts "For security, #{password_file} should be chmod 600. Attempting this for you..."
       %x[chmod 600 #{password_file}]
     end
   end
@@ -249,10 +249,7 @@ end
 def get_depot_version(ssh_session,filename,depot_url,os_version)
   if !filename.match(/[A-z]/)
     ssh_session.exec!("esxcli network firewall ruleset set -e true -r httpClient")
-    depot_version = ssh_session.exec!("esxcli software sources vib list -d #{depot_url} 2>&1 | grep '#{os_version}' |grep 'esx-base' |grep Update |awk '{print $2}' |tail -1")
-    if !depot_version
-      depot_version = ssh_session.exec!("esxcli software sources vib list -d #{depot_url} 2>&1 | grep '#{os_version}' |grep 'esx-base' |grep Installed |awk '{print $2}' |tail -1")
-    end
+    depot_version = ssh_session.exec!("esxcli software sources vib list -d #{depot_url} 2>&1 | grep '#{os_version}' | grep 'esx-base' | awk '{print $2}' | sort | tail -1")
     depot_version = depot_version.chomp 
   else
     tmp_dir = "/tmp/esxzip"
@@ -275,6 +272,10 @@ def compare_versions(local_version,depot_version,mode)
   end
   if depot_version.match(/-/)
     depot_version = depot_version.split(/-/)[1]
+  end
+  if depot_version == ""
+    puts "Error getting latest patch level from VMware. If problem persists, reboot ESX host and try again."
+    exit
   end
   puts "Current:   "+local_version
   puts "Available: "+depot_version
