@@ -14,7 +14,6 @@ require 'bundler/setup'
 
 require 'net/ssh'
 require 'net/scp'
-require 'etc'
 require 'getopt/std'
 require 'io/console'
 
@@ -42,7 +41,7 @@ depot_url   = "http://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-dep
 # If all systems have the same username and password then an entry of:
 # ALL:username:password or *:username:password will work
 
-esx_password_file    = Etc.getpwuid.dir+"/.esxpasswd"
+esx_password_file    = File.expand_path('~')+"/.esxpasswd"
 
 # If password files exist give them sensible permissions
 
