@@ -106,6 +106,7 @@ def print_usage(script,options)
   puts "-V:\tPrint version information"
   puts "-B:\tBackup ESX configuration"
   puts "-U:\tUpdate ESX if newer patch level is available"
+  puts "-b:\tReboot server after patch installation"
   puts "-L:\tList all available versions in local patch directory"
   puts "-C:\tCheck if newer patch level is available"
   puts "-s:\tHostname"

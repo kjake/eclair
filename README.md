@@ -102,6 +102,7 @@ Usage: eclair.rb -[bCDef:Hhl:kK:LP:r:Rs:Sp:u:UVy]
 -V:	Print version information
 -B: Backup server configuration
 -U:	Update ESX if newer patch level is available
+-b: Reboot server after patch installation
 -L:	List all available versions in local patch directory
 -C:	Check if newer patch level is available
 -s:	Hostname
