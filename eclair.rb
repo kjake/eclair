@@ -21,7 +21,7 @@ require 'io/console'
 # Set some defaults
 
 script    = $0
-options   = "BCDef:Hhl:kK:LP:r:Rs:p:u:UVy"
+options   = "BCDef:Hhl:kK:LP:r:Rs:p:u:bUVy"
 username  = ""
 password  = ""
 mode      = "check"
