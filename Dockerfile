@@ -9,6 +9,7 @@ RUN apk update \
     ruby \
     ruby-bundler \
     ruby-io-console \
+    ruby-dev \
     && rm -rf /var/cache/apk/* \
     && mkdir -p /opt/eclair \
     && wget https://github.com/kjake/eclair/archive/master.zip -O /opt/eclair/master.zip \
